@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="Shivani Kottur" />
+    
+    <link rel="shortcut icon" type="image/x-icon" href="../../img/favicon.ico">
+    <title>Project1</title>
+    <meta name="generator" content="Hugo 0.79.0" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="../../css/main.css" />
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,400,200bold,400old" />
+    
+    <!--[if lt IE 9]>
+			<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+			<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+		<![endif]-->
+
+    
+  </head>
+
+  <body>
+    <div id="wrap">
+      
+      <nav class="navbar navbar-default">
+  <div class="container">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="../../"><i class="fa fa-home"></i></a>
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <div class="navbar-collapse collapse" id="navbar">
+      <ul class="nav navbar-nav navbar-right">
+      
+        
+        <li><a href="../../post/">BLOG</a></li>
+        
+        <li><a href="../../projects/">PROJECTS</a></li>
+        
+        <li><a href="../../resume/">RESUME</a></li>
+        
+      
+      </ul>
+    </div>
+  </div>
+</nav>
+
+      <div class="container">
+        <div class="blog-post">
+          <h3>
+            <strong><a href="../../project/project1/">Project1</a></strong>
+          </h3>
+        </div>
+ 
+<div class="blog-title">
+          <h4>
+         December 11, 2020 
+            &nbsp;&nbsp;
+            
+          </h4>
+        </div>
+
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <div class="blogpost">
+              
+
+
+<div id="shivani-kottur-ssk2425" class="section level1">
+<h1>Shivani Kottur, ssk2425</h1>
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<p><em>This project is all about analyzing characteristics of dogs. The first dataset, &quot;dog_intelligence,&quot; is about different breeds of dogs and their mental characteristics. Its variables include the dog breed, their intelligence classification, the probability that the breed obeys the first command given, as well as the upper and lower limits of repetitions for the breed to understand any new commands. The second dataset, &quot;AKC_Breed_Info,&quot; is about different breeds of dogs and their physical characteristics. Its variables include the dog breed, the upper and lower limits of height in inches, and the upper and lower limits of weight in pounds. The two datasets were acquired from the data.world website online. However, the first dataset's data originally came from Stanley Coren, a researcher from the University of British Columbia. The second dataset's data originally came from the American Kennel Club.</em></p>
+<p><em>This data is interesting to me because I love dogs and have always wanted my own. So, I like having the opportunity to analyze data involving their physical and mental characteristics. I expect to see associations between their height and weight data. I do not expect any other associations.</em></p>
+</div>
+<div id="datasets" class="section level2">
+<h2>Datasets</h2>
+<pre class="r"><code>library(tidyverse)
+
+mental &lt;- read_csv(&quot;dog_intelligence.csv&quot;)
+physical &lt;- read_csv(&quot;AKC_Breed_Info.csv&quot;)
+
+mental &lt;- mental %&gt;% as.data.frame
+physical &lt;- physical %&gt;% as.data.frame
+
+mental</code></pre>
+<pre><code>##                              Breed         Classification obey reps_lower
+## 1                    Border Collie         Brightest Dogs  95%          1
+## 2                           Poodle         Brightest Dogs  95%          1
+## 3                  German Shepherd         Brightest Dogs  95%          1
+## 4                 Golden Retriever         Brightest Dogs  95%          1
+## 5                Doberman Pinscher         Brightest Dogs  95%          1
+## 6                Shetland Sheepdog         Brightest Dogs  95%          1
+## 7               Labrador Retriever         Brightest Dogs  95%          1
+## 8                         Papillon         Brightest Dogs  95%          1
+## 9                       Rottweiler         Brightest Dogs  95%          1
+## 10           Australian Cattle Dog         Brightest Dogs  95%          1
+## 11            Pembroke Welsh Corgi Excellent Working Dogs  85%          5
+## 12             Miniature Schnauzer Excellent Working Dogs  85%          5
+## 13        English Springer Spaniel Excellent Working Dogs  85%          5
+## 14 Belgian Shepherd Dog (Tervuren) Excellent Working Dogs  85%          5
+## 15                      Schipperke Excellent Working Dogs  85%          5
+## 16                Belgian Sheepdog Excellent Working Dogs  85%          5
+## 17                          Collie Excellent Working Dogs  85%          5
+## 18                        Keeshond Excellent Working Dogs  85%          5
+## 19      German Shorthaired Pointer Excellent Working Dogs  85%          5
+## 20           Flat-Coated Retriever Excellent Working Dogs  85%          5
+##    reps_upper
+## 1           4
+## 2           4
+## 3           4
+## 4           4
+## 5           4
+## 6           4
+## 7           4
+## 8           4
+## 9           4
+## 10          4
+## 11         15
+## 12         15
+## 13         15
+## 14         15
+## 15         15
+## 16         15
+## 17         15
+## 18         15
+## 19         15
+## 20         15
+##  [ reached &#39;max&#39; / getOption(&quot;max.print&quot;) -- omitted 116 rows ]</code></pre>
+<pre class="r"><code>physical</code></pre>
+<pre><code>##                       Breed height_low_inches height_high_inches weight_low_lbs
+## 1                     Akita                26                 28             80
+## 2        Anatolian Sheepdog                27                 29            100
+## 3      Bernese Mountain Dog                23                 27             85
+## 4                Bloodhound                24                 26             80
+## 5                    Borzoi                26                 28             70
+## 6               Bullmastiff                25                 27            100
+## 7                Great Dane                32                 32            120
+## 8            Great Pyrenees                27                 32             95
+## 9  Great Swiss Mountain Dog                23                 28            130
+## 10          Irish Wolfhound                28                 35             90
+## 11                   Kuvasz                28                 30             70
+## 12                  Mastiff                27                 30            175
+## 13       Neopolitan Mastiff                24                 30            100
+## 14             Newfoundland                26                 28            100
+## 15              Otter Hound                24                 26             65
+## 16               Rottweiler                22                 27             90
+## 17            Saint Bernard                25                 28            110
+## 18             Afghan Hound                25                 27             50
+## 19         Alaskan Malamute                na                 na             na
+## 20        American Foxhound                22                 25             65
+##    weight_high_lbs
+## 1              120
+## 2              150
+## 3              110
+## 4              120
+## 5              100
+## 6              130
+## 7              160
+## 8              120
+## 9              150
+## 10             150
+## 11             120
+## 12             190
+## 13             150
+## 14             150
+## 15             110
+## 16             110
+## 17             190
+## 18              60
+## 19              na
+## 20              70
+##  [ reached &#39;max&#39; / getOption(&quot;max.print&quot;) -- omitted 130 rows ]</code></pre>
+</div>
+<div id="untidying-and-tidying" class="section level2">
+<h2>Untidying and Tidying</h2>
+<pre class="r"><code>mental &lt;- mental %&gt;% pivot_longer(c(&quot;reps_lower&quot;, &quot;reps_upper&quot;), 
+    names_to = &quot;reps&quot;, values_to = &quot;reps values&quot;)
+mental &lt;- mental %&gt;% pivot_wider(names_from = &quot;reps&quot;, values_from = &quot;reps values&quot;)
+
+mental</code></pre>
+<pre><code>## # A tibble: 136 x 5
+##    Breed                 Classification obey  reps_lower reps_upper
+##    &lt;chr&gt;                 &lt;chr&gt;          &lt;chr&gt;      &lt;dbl&gt;      &lt;dbl&gt;
+##  1 Border Collie         Brightest Dogs 95%            1          4
+##  2 Poodle                Brightest Dogs 95%            1          4
+##  3 German Shepherd       Brightest Dogs 95%            1          4
+##  4 Golden Retriever      Brightest Dogs 95%            1          4
+##  5 Doberman Pinscher     Brightest Dogs 95%            1          4
+##  6 Shetland Sheepdog     Brightest Dogs 95%            1          4
+##  7 Labrador Retriever    Brightest Dogs 95%            1          4
+##  8 Papillon              Brightest Dogs 95%            1          4
+##  9 Rottweiler            Brightest Dogs 95%            1          4
+## 10 Australian Cattle Dog Brightest Dogs 95%            1          4
+## # … with 126 more rows</code></pre>
+<pre class="r"><code>physical &lt;- physical %&gt;% pivot_longer(c(&quot;height_low_inches&quot;, 
+    &quot;height_high_inches&quot;), names_to = &quot;height&quot;, values_to = &quot;height values&quot;)
+physical &lt;- physical %&gt;% pivot_wider(names_from = &quot;height&quot;, values_from = &quot;height values&quot;)
+
+physical &lt;- physical %&gt;% pivot_longer(c(&quot;weight_low_lbs&quot;, &quot;weight_high_lbs&quot;), 
+    names_to = &quot;weight&quot;, values_to = &quot;weight values&quot;)
+physical &lt;- physical %&gt;% pivot_wider(names_from = &quot;weight&quot;, values_from = &quot;weight values&quot;)
+
+physical</code></pre>
+<pre><code>## # A tibble: 150 x 5
+##    Breed        height_low_inch… height_high_inc… weight_low_lbs weight_high_lbs
+##    &lt;chr&gt;        &lt;chr&gt;            &lt;chr&gt;            &lt;chr&gt;          &lt;chr&gt;          
+##  1 Akita        26               28               80             120            
+##  2 Anatolian S… 27               29               100            150            
+##  3 Bernese Mou… 23               27               85             110            
+##  4 Bloodhound   24               26               80             120            
+##  5 Borzoi       26               28               70             100            
+##  6 Bullmastiff  25               27               100            130            
+##  7 Great Dane   32               32               120            160            
+##  8 Great Pyren… 27               32               95             120            
+##  9 Great Swiss… 23               28               130            150            
+## 10 Irish Wolfh… 28               35               90             150            
+## # … with 140 more rows</code></pre>
+<p><em>Both datasets were already tidy when they were obtained. So in this section, I untidied and then tidied them again. For the first dataset, I untidied the &quot;reps_lower&quot; and &quot;reps_higher&quot; variables by combining them into one column through pivot_longer. Then, I separated them again to tidy using pivot_wider.</em></p>
+<p><em>For the second dataset, I untidied more columns. I combined &quot;height_low_inches with &quot;height_high_inches&quot; into one column, and &quot;weight_low_lbs with &quot;weight_high_lbs&quot; into another column using pivot_longer. Then, I separated all 4 variables into individual columns in order to tidy them back, using pivot_wider. This allowed each observation to have its own row and each variable its own column.</em></p>
+</div>
+<div id="joining" class="section level2">
+<h2>Joining</h2>
+<pre><code>## # A tibble: 104 x 8
+##    Breed Classification reps_lower reps_upper height_low_inch… height_high_inc…
+##    &lt;chr&gt; &lt;chr&gt;               &lt;dbl&gt;      &lt;dbl&gt;            &lt;dbl&gt;            &lt;dbl&gt;
+##  1 Bord… Brightest Dogs          1          4               19               21
+##  2 Gold… Brightest Dogs          1          4               21               24
+##  3 Dobe… Brightest Dogs          1          4               26               28
+##  4 Labr… Brightest Dogs          1          4               21               24
+##  5 Papi… Brightest Dogs          1          4                8               11
+##  6 Rott… Brightest Dogs          1          4               22               27
+##  7 Aust… Brightest Dogs          1          4               17               20
+##  8 Engl… Excellent Wor…          5         15               20               20
+##  9 Schi… Excellent Wor…          5         15               10               13
+## 10 Belg… Excellent Wor…          5         15               22               26
+## # … with 94 more rows, and 2 more variables: weight_low_lbs &lt;dbl&gt;,
+## #   weight_high_lbs &lt;dbl&gt;</code></pre>
+<p><em>The first dataset had 136 observations; the second dataset had 150 observations. I wanted to conduct an inner join between these two datasets. That is because I only wanted to analyze the dog breeds that were in common between the two, so all their physical and mental characteristics would be included. I didn't want to look at dog breeds that had some aspects of their data missing.</em></p>
+<p><em>I joined the two sets by the Breed listed in both, creating a new joined dataset of 105 observations. Then, I had to drop row 71 of the new joined dataset, since I noticed that it had some values listed as &quot;na.&quot; Not that the value was missing and R coded it as &quot;N/A&quot;, but in the original set, the research manually typed it out as &quot;na.&quot; Furthermore, I dropped a column with the variable &quot;obey.&quot; This variable represents the percentage of commands obeyed by the breeds, but I didn't think it was as important and in-depth as other variables like &quot;reps_lower&quot; and &quot;reps_higher&quot; in representing the Breed's obedience level.</em></p>
+<p><em>Finally, I had to convert four variables from character variables to numeric variables so they would be able to have summary statistics conducted on them. The final dataset has 104 observations with 8 variables.</em></p>
+</div>
+<div id="wrangling-part1" class="section level2">
+<h2>Wrangling Part1</h2>
+<pre class="r"><code>dogs %&gt;% filter(between(weight_low_lbs, 5, 35)) %&gt;% summarize(mean(weight_high_lbs))</code></pre>
+<pre><code>## # A tibble: 1 x 1
+##   `mean(weight_high_lbs)`
+##                     &lt;dbl&gt;
+## 1                    27.7</code></pre>
+<pre class="r"><code>dogs %&gt;% select(Breed, weight_low_lbs, weight_high_lbs) %&gt;% summarize(n_distinct(Breed))</code></pre>
+<pre><code>## # A tibble: 1 x 1
+##   `n_distinct(Breed)`
+##                 &lt;int&gt;
+## 1                 104</code></pre>
+<pre class="r"><code>dogs %&gt;% arrange(height_low_inches) %&gt;% summarize(sd(height_low_inches))</code></pre>
+<pre><code>## # A tibble: 1 x 1
+##   `sd(height_low_inches)`
+##                     &lt;dbl&gt;
+## 1                    6.75</code></pre>
+<pre class="r"><code>dogs %&gt;% group_by(Classification) %&gt;% summarize(max(weight_high_lbs))</code></pre>
+<pre><code>## # A tibble: 6 x 2
+##   Classification                                  `max(weight_high_lbs)`
+##   &lt;chr&gt;                                                            &lt;dbl&gt;
+## 1 Above Average Working Dogs                                         150
+## 2 Average Working/Obedience Intelligence                             160
+## 3 Brightest Dogs                                                     110
+## 4 Excellent Working Dogs                                             110
+## 5 Fair Working/Obedience Intelligence                                190
+## 6 Lowest Degree of Working/Obedience Intelligence                    190</code></pre>
+<pre class="r"><code>dogs %&gt;% mutate(height_range = height_high_inches - height_low_inches)</code></pre>
+<pre><code>## # A tibble: 104 x 9
+##    Breed Classification reps_lower reps_upper height_low_inch… height_high_inc…
+##    &lt;chr&gt; &lt;chr&gt;               &lt;dbl&gt;      &lt;dbl&gt;            &lt;dbl&gt;            &lt;dbl&gt;
+##  1 Bord… Brightest Dogs          1          4               19               21
+##  2 Gold… Brightest Dogs          1          4               21               24
+##  3 Dobe… Brightest Dogs          1          4               26               28
+##  4 Labr… Brightest Dogs          1          4               21               24
+##  5 Papi… Brightest Dogs          1          4                8               11
+##  6 Rott… Brightest Dogs          1          4               22               27
+##  7 Aust… Brightest Dogs          1          4               17               20
+##  8 Engl… Excellent Wor…          5         15               20               20
+##  9 Schi… Excellent Wor…          5         15               10               13
+## 10 Belg… Excellent Wor…          5         15               22               26
+## # … with 94 more rows, and 3 more variables: weight_low_lbs &lt;dbl&gt;,
+## #   weight_high_lbs &lt;dbl&gt;, height_range &lt;dbl&gt;</code></pre>
+<pre class="r"><code>dogs %&gt;% summarize(mean_low_height = mean(height_low_inches))</code></pre>
+<pre><code>## # A tibble: 1 x 1
+##   mean_low_height
+##             &lt;dbl&gt;
+## 1            18.1</code></pre>
+<p><em>In this section, I used the six core dplyr verbs to explore the dataset. After filtering for dogs who have a weight_low_lbs between 5 and 35 pounds, their mean weight_high_lbs is 27.733 lbs. There are 104 distinct dog breeds. After arranging the height_low_inches from smallest to greatest, the standard deviation of the height_low_inches is 6.751 inches. Next, we found the max weight_high_lbs for each intelligence classification by grouping by each classification. Then, we found the range of heights for each dog breed by making a new column for it using mutate. Finally, we found the mean height_low_inches using summarize.</em></p>
+</div>
+<div id="wrangling-part2" class="section level2">
+<h2>Wrangling Part2</h2>
+<pre class="r"><code>dogs %&gt;% summarize_if(is.numeric, funs(mean, sd, min, max, var))</code></pre>
+<pre><code>## # A tibble: 1 x 30
+##   reps_lower_mean reps_upper_mean height_low_inch… height_high_inc…
+##             &lt;dbl&gt;           &lt;dbl&gt;            &lt;dbl&gt;            &lt;dbl&gt;
+## 1            26.4            42.5             18.1             21.0
+## # … with 26 more variables: weight_low_lbs_mean &lt;dbl&gt;,
+## #   weight_high_lbs_mean &lt;dbl&gt;, reps_lower_sd &lt;dbl&gt;, reps_upper_sd &lt;dbl&gt;,
+## #   height_low_inches_sd &lt;dbl&gt;, height_high_inches_sd &lt;dbl&gt;,
+## #   weight_low_lbs_sd &lt;dbl&gt;, weight_high_lbs_sd &lt;dbl&gt;, reps_lower_min &lt;dbl&gt;,
+## #   reps_upper_min &lt;dbl&gt;, height_low_inches_min &lt;dbl&gt;,
+## #   height_high_inches_min &lt;dbl&gt;, weight_low_lbs_min &lt;dbl&gt;,
+## #   weight_high_lbs_min &lt;dbl&gt;, reps_lower_max &lt;dbl&gt;, reps_upper_max &lt;dbl&gt;,
+## #   height_low_inches_max &lt;dbl&gt;, height_high_inches_max &lt;dbl&gt;,
+## #   weight_low_lbs_max &lt;dbl&gt;, weight_high_lbs_max &lt;dbl&gt;, reps_lower_var &lt;dbl&gt;,
+## #   reps_upper_var &lt;dbl&gt;, height_low_inches_var &lt;dbl&gt;,
+## #   height_high_inches_var &lt;dbl&gt;, weight_low_lbs_var &lt;dbl&gt;,
+## #   weight_high_lbs_var &lt;dbl&gt;</code></pre>
+<pre class="r"><code>dogs %&gt;% group_by(Classification) %&gt;% summarize_if(is.numeric, 
+    funs(mean, sd, min, max, var))</code></pre>
+<pre><code>## # A tibble: 6 x 31
+##   Classification reps_lower_mean reps_upper_mean height_low_inch…
+##   &lt;chr&gt;                    &lt;dbl&gt;           &lt;dbl&gt;            &lt;dbl&gt;
+## 1 Above Average…              16              25             18.1
+## 2 Average Worki…              26              40             19.1
+## 3 Brightest Dogs               1               4             19.1
+## 4 Excellent Wor…               5              15             19.5
+## 5 Fair Working/…              41              80             14.2
+## 6 Lowest Degree…              81             100             19.2
+## # … with 27 more variables: height_high_inches_mean &lt;dbl&gt;,
+## #   weight_low_lbs_mean &lt;dbl&gt;, weight_high_lbs_mean &lt;dbl&gt;, reps_lower_sd &lt;dbl&gt;,
+## #   reps_upper_sd &lt;dbl&gt;, height_low_inches_sd &lt;dbl&gt;,
+## #   height_high_inches_sd &lt;dbl&gt;, weight_low_lbs_sd &lt;dbl&gt;,
+## #   weight_high_lbs_sd &lt;dbl&gt;, reps_lower_min &lt;dbl&gt;, reps_upper_min &lt;dbl&gt;,
+## #   height_low_inches_min &lt;dbl&gt;, height_high_inches_min &lt;dbl&gt;,
+## #   weight_low_lbs_min &lt;dbl&gt;, weight_high_lbs_min &lt;dbl&gt;, reps_lower_max &lt;dbl&gt;,
+## #   reps_upper_max &lt;dbl&gt;, height_low_inches_max &lt;dbl&gt;,
+## #   height_high_inches_max &lt;dbl&gt;, weight_low_lbs_max &lt;dbl&gt;,
+## #   weight_high_lbs_max &lt;dbl&gt;, reps_lower_var &lt;dbl&gt;, reps_upper_var &lt;dbl&gt;,
+## #   height_low_inches_var &lt;dbl&gt;, height_high_inches_var &lt;dbl&gt;,
+## #   weight_low_lbs_var &lt;dbl&gt;, weight_high_lbs_var &lt;dbl&gt;</code></pre>
+<pre class="r"><code>cormat &lt;- dogs %&gt;% select_if(is.numeric) %&gt;% cor(use = &quot;pair&quot;)
+cormat</code></pre>
+<pre><code>##                     reps_lower  reps_upper height_low_inches height_high_inches
+## reps_lower          1.00000000  0.94888319        -0.0728756         -0.1231179
+## reps_upper          0.94888319  1.00000000        -0.1444170         -0.1828860
+## height_low_inches  -0.07287560 -0.14441703         1.0000000          0.9604266
+## height_high_inches -0.12311788 -0.18288598         0.9604266          1.0000000
+## weight_low_lbs      0.05745469 -0.01079675         0.7368888          0.6572056
+## weight_high_lbs     0.04264460 -0.01581360         0.7296752          0.6550512
+##                    weight_low_lbs weight_high_lbs
+## reps_lower             0.05745469       0.0426446
+## reps_upper            -0.01079675      -0.0158136
+## height_low_inches      0.73688884       0.7296752
+## height_high_inches     0.65720556       0.6550512
+## weight_low_lbs         1.00000000       0.9607178
+## weight_high_lbs        0.96071784       1.0000000</code></pre>
+<p><em>This section generated three different outputs. In the first one, the mean, standard deviation, minimum, maximum, and variance of every numeric variable was calculated. The second output calculated all the above summary statistics, but grouped by each intelligence level classification. The final output was a correlation matrix of the correlations among all the numeric variables.</em></p>
+</div>
+<div id="visualizing" class="section level2">
+<h2>Visualizing</h2>
+<pre class="r"><code>library(RColorBrewer)
+
+cormat %&gt;% as.data.frame %&gt;% rownames_to_column(&quot;var1&quot;) %&gt;% pivot_longer(-1, 
+    &quot;var2&quot;, values_to = &quot;correlation&quot;) %&gt;% ggplot(aes(var1, var2, 
+    fill = correlation)) + geom_tile() + theme(axis.text.x = element_text(angle = 90, 
+    hjust = 1)) + coord_fixed() + ggtitle(&quot;Correlation Heatmap&quot;) + 
+    geom_text(aes(label = round(correlation, 2)))</code></pre>
+<p><img src="../../project/project1_files/figure-html/unnamed-chunk-6-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggplot(dogs, aes(height_low_inches, weight_low_lbs, color = Classification)) + 
+    geom_point() + scale_x_continuous(breaks = seq(0, 50, 5)) + 
+    xlab(&quot;Height Lower Limit (inches)&quot;) + ylab(&quot;Weight Lower Limit (pounds)&quot;) + 
+    ggtitle(&quot;Weight Versus Height (Lower Limit)&quot;) + theme(legend.justification = &quot;bottom&quot;) + 
+    scale_color_brewer(palette = &quot;Set3&quot;)</code></pre>
+<p><img src="../../project/project1_files/figure-html/unnamed-chunk-6-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggplot(dogs, aes(x = weight_low_lbs, fill = Classification)) + 
+    geom_bar(aes(y = reps_lower), stat = &quot;summary&quot;, fun = mean) + 
+    scale_x_continuous(breaks = seq(0, 200, 10)) + theme(axis.text.x = element_text(angle = 90, 
+    hjust = 1)) + xlab(&quot;Weight Lower Limit (pounds)&quot;) + ylab(&quot;Repetitions Lower Limit&quot;) + 
+    ggtitle(&quot;Repetitions Versus Weight (Lower Limits)&quot;) + theme(legend.justification = &quot;top&quot;) + 
+    scale_fill_brewer()</code></pre>
+<p><img src="../../project/project1_files/figure-html/unnamed-chunk-6-3.png" width="672" style="display: block; margin: auto;" /> <em>The first plot is a correlation heatmap. It shows the correlations between all of the numeric variables in this dataset. The plot shows some interesting trends. As expected, height and weight (of both lower and upper limits) are strongly correlated (correlation coefficient is between 0.75 and 1.00). Another interesting observation is that the repetitions (of both lower and upper limits) are not correlated at all to either height or weight of the dog breed. This essentially means that intelligence level is not correlated with size (height/weight) of a dog breed.</em></p>
+<p><em>The second plot is a scatterplot. It shows the relationship between the weight (lower limit) and height (lower limit) of dog breeds. The intelligence level classification is mapped into the color of the scatterplot points. An interesting trend is that as expected, as the height (lower limit) of a dog breed increases, the weight (lower limit) of the breed increases as well. However, intelligence level classifications don't seem to have any correlation with the other 2 variables; they seem to be randomly spread out (colored) throughout the points.</em></p>
+<p><em>The third plot is a barplot. It shows the relationship between the repetitions (lower limit) and weight (lower limit) of dog breeds. The intelligence level classification is mapped into the fill of the bars. There are some interesting trends. First, as the weight (lower limit) of a dog breed increases, the repetitions (lower limit) seems to decrease; there is an outlier to this trend though. In general, the intelligence level classification doesn't seem to have any correlation with the other 2 variables; they seem to be randomly spread out (filled) throughout the bars.</em></p>
+</div>
+<div id="dimensionality-reduction" class="section level2">
+<h2>Dimensionality Reduction</h2>
+<pre class="r"><code>library(cluster)
+
+pam_data &lt;- dogs %&gt;% select(height_high_inches, weight_high_lbs, 
+    reps_upper)
+
+sil_width &lt;- vector()
+for (i in 2:10) {
+    pam_fit &lt;- pam(pam_data, k = i)
+    sil_width[i] &lt;- pam_fit$silinfo$avg.width
+}
+ggplot() + geom_line(aes(x = 1:10, y = sil_width)) + scale_x_continuous(name = &quot;k&quot;, 
+    breaks = 1:10)</code></pre>
+<p><img src="../../project/project1_files/figure-html/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>pam1 &lt;- pam_data %&gt;% scale %&gt;% pam(k = 4)
+pam1</code></pre>
+<pre><code>## Medoids:
+##      ID height_high_inches weight_high_lbs reps_upper
+## [1,] 23         -0.5009500      -0.5860981 -0.6188578
+## [2,] 22          0.6194543       0.4656999 -0.6188578
+## [3,] 95          0.7439436       1.8430545  1.3282636
+## [4,] 80         -1.1233968      -0.9116546  1.3282636
+## Clustering vector:
+##   [1] 1 2 2 2 1 2 1 1 1 2 1 2 1 1 2 2 2 1 2 2 1 2 1 1 2 2 1 2 1 2 1 2 1 1 2 2 1
+##  [38] 1 2 1 1 2 2 2 2 1 2 3 2 2 2 1 2 1 2 1 2 1 1 2 2 2 2 1 2 2 3 1 1 1 1 1 2 2
+##  [75] 1 1 1 2 4 4 4 4 4 4 4 4 4 4 4 3 4 3 3 4 3 4 4 3 4 3
+##  [ reached getOption(&quot;max.print&quot;) -- omitted 4 entries ]
+## Objective function:
+##     build      swap 
+## 0.8412860 0.7670614 
+## 
+## Available components:
+##  [1] &quot;medoids&quot;    &quot;id.med&quot;     &quot;clustering&quot; &quot;objective&quot;  &quot;isolation&quot; 
+##  [6] &quot;clusinfo&quot;   &quot;silinfo&quot;    &quot;diss&quot;       &quot;call&quot;       &quot;data&quot;</code></pre>
+<pre class="r"><code>pamclust &lt;- pam_data %&gt;% mutate(cluster = as.factor(pam1$clustering))
+pamclust %&gt;% ggplot(aes(height_high_inches, weight_high_lbs, 
+    color = cluster)) + geom_point() + ggtitle(&quot;Cluster Scatterplot&quot;)</code></pre>
+<p><img src="../../project/project1_files/figure-html/unnamed-chunk-7-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>pamclust %&gt;% group_by(cluster) %&gt;% summarize_if(is.numeric, mean, 
+    na.rm = T)</code></pre>
+<pre><code>## # A tibble: 4 x 4
+##   cluster height_high_inches weight_high_lbs reps_upper
+##   &lt;fct&gt;                &lt;dbl&gt;           &lt;dbl&gt;      &lt;dbl&gt;
+## 1 1                     15.9            30.5       27.6
+## 2 2                     27.0            77.2       27.2
+## 3 3                     28.7           129         80  
+## 4 4                     13.9            21.8       85.6</code></pre>
+<pre class="r"><code>pam1$silinfo$avg.width</code></pre>
+<pre><code>## [1] 0.4281911</code></pre>
+<pre class="r"><code>plot(pam1, which = 2)</code></pre>
+<p><img src="../../project/project1_files/figure-html/unnamed-chunk-7-3.png" width="672" style="display: block; margin: auto;" /> <em>I performed PAM clustering on my dataset. I clustered by 3 numeric variables, &quot;height_high_inches&quot;, &quot;weight_high_lbs&quot;, and &quot;reps_upper&quot;. I wanted to see how these 3 variables were related. In the first step, I figured out how many clusters were needed by generating a silhouette plot. This plot told me I needed 4 clusters, since that was the k-value with the highest width (~0.485). After that, I conducted the PAM clustering analysis. Then, I visualized the clusters. There appeared to be 3 distinct clusters, not 4, because two clusters appeared to be in the same area (the red and purple ones). So in a way, the data instead seems to be clustered into three different groups. Perhaps this corresponds to small, medium, and large dogs (since height and weight were mapped on the axes). Afterward, the mean for each cluster's variables was computed. Finally, the average silhouette width was calculated to be 0.43. This value indicates that the structure is weak and could be artificial (corresponding to values 0.26-0.50). Though the width is on the upper end of this range, perhaps its weak nature explains why the four expected clusters weren't very distinct on the plot. Overall, this PAM clustering analysis did not have much goodness-of-fit since the average silhouette width was weak and the 4 clusters weren't very distinct.</em></p>
+</div>
+</div>
+
+            
+        <hr>         <div class="related-posts">
+                <h5>Related Posts</h5>
+                
+              </div> 
+            </div>
+          </div>
+
+   <hr>  <div class="disqus">
+  <div id="disqus_thread"></div>
+  <script type="text/javascript">
+
+    (function() {
+      
+      
+      if (window.location.hostname == "localhost")
+        return;
+
+      var disqus_shortname = '';
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  <a href="http://disqus.com/" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div> 
+        </div>
+      </div>
+    </div>
+
+    
+    <footer>
+  <div id="footer">
+    <div class="container">
+      <p class="text-muted">&copy; All rights reserved. Powered by <a href="https://gohugo.io/">Hugo</a> and
+      <a href="http://www.github.com/nurlansu/hugo-sustain/">sustain</a> with ♥</p>
+    </div>
+  </div>
+</footer>
+<div class="footer"></div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="../../js/docs.min.js"></script>
+<script src="../../js/main.js"></script>
+
+<script src="../../js/ie10-viewport-bug-workaround.js"></script>
+
+
+    
+  </body>
+</html>

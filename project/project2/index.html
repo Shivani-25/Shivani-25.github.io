@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="Shivani Kottur" />
+    
+    <link rel="shortcut icon" type="image/x-icon" href="../../img/favicon.ico">
+    <title>Project2</title>
+    <meta name="generator" content="Hugo 0.79.0" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="../../css/main.css" />
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,400,200bold,400old" />
+    
+    <!--[if lt IE 9]>
+			<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+			<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+		<![endif]-->
+
+    
+  </head>
+
+  <body>
+    <div id="wrap">
+      
+      <nav class="navbar navbar-default">
+  <div class="container">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="../../"><i class="fa fa-home"></i></a>
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <div class="navbar-collapse collapse" id="navbar">
+      <ul class="nav navbar-nav navbar-right">
+      
+        
+        <li><a href="../../post/">BLOG</a></li>
+        
+        <li><a href="../../projects/">PROJECTS</a></li>
+        
+        <li><a href="../../resume/">RESUME</a></li>
+        
+      
+      </ul>
+    </div>
+  </div>
+</nav>
+
+      <div class="container">
+        <div class="blog-post">
+          <h3>
+            <strong><a href="../../project/project2/">Project2</a></strong>
+          </h3>
+        </div>
+ 
+<div class="blog-title">
+          <h4>
+         January 1, 0001 
+            &nbsp;&nbsp;
+            
+          </h4>
+        </div>
+
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <div class="blogpost">
+              
+
+
+<div id="shivani-kottur-ssk2425" class="section level1">
+<h1>Shivani Kottur, ssk2425</h1>
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<p><em>This project involves the dogs dataset, which includes certain mental and physical characteristics of numerous dog breeds. Specifically, the dataset contains variables representing the breeds (&quot;Breed&quot;), their intelligence level classifications (&quot;Classification&quot;), the upper and lower limits of repetitions necessary to understand commands (&quot;reps_lower&quot;, &quot;reps_upper&quot;), and the upper and lower limits of height and weight (&quot;height_low_inches&quot;, &quot;height_high_inches&quot;, &quot;weight_low_lbs&quot;, &quot;weight_high_lbs&quot;). In total, there are 104 observations.</em></p>
+</div>
+<div id="manova" class="section level2">
+<h2>1. MANOVA</h2>
+<pre class="r"><code>library(dplyr) 
+library(tidyverse) 
+library(survival)
+library(sandwich) 
+library(lmtest) 
+library(ggplot2) 
+library(glmnet) 
+library(vegan)
+
+# Get Final Dataset (copied from project 1)
+mental &lt;- read_csv(&quot;dog_intelligence.csv&quot;)
+physical &lt;- read_csv(&quot;AKC_Breed_Info.csv&quot;)
+mental &lt;- mental %&gt;% as.data.frame
+physical &lt;- physical %&gt;% as.data.frame
+dogs &lt;- inner_join(mental, physical, by=&quot;Breed&quot;)
+dogs &lt;- dogs %&gt;% slice(-c(71))
+dogs &lt;- dogs[-3]
+dogs &lt;- dogs %&gt;% mutate(height_low_inches=as.numeric(height_low_inches), height_high_inches=as.numeric(height_high_inches), weight_low_lbs=as.numeric(weight_low_lbs), weight_high_lbs=as.numeric(weight_high_lbs))
+
+
+# MANOVA
+man1 &lt;- manova(cbind(reps_lower, reps_upper) ~ Classification, data = dogs) 
+summary(man1)</code></pre>
+<pre><code>## Df Pillai approx F num Df den Df Pr(&gt;F)
+## Classification 5 2 Inf 10 196 &lt; 2.2e-16 ***
+## Residuals 98
+## ---
+## Signif. codes: 0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1
+&#39; &#39; 1</code></pre>
+<pre class="r"><code># Univariate ANOVA
+summary.aov(man1)</code></pre>
+<pre><code>## Response reps_lower :
+## Df Sum Sq Mean Sq F value Pr(&gt;F)
+## Classification 5 43983 8796.6 2.2946e+31 &lt; 2.2e-16 ***
+## Residuals 98 0 0.0
+## ---
+## Signif. codes: 0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1
+&#39; &#39; 1
+##
+## Response reps_upper :
+## Df Sum Sq Mean Sq F value Pr(&gt;F)
+## Classification 5 82182 16436 8.4648e+30 &lt; 2.2e-16 ***
+## Residuals 98 0 0
+## ---
+## Signif. codes: 0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1
+&#39; &#39; 1</code></pre>
+<pre class="r"><code># Post-Hoc T Tests
+pairwise.t.test(dogs$reps_lower, dogs$Classification, p.adj = &quot;none&quot;)</code></pre>
+<pre><code>##
+## Pairwise comparisons using t tests with pooled SD
+##
+## data: dogs$reps_lower and dogs$Classification
+##
+## Above Average Working Dogs
+## Average Working/Obedience Intelligence &lt;2e-16
+## Brightest Dogs &lt;2e-16
+## Excellent Working Dogs &lt;2e-16
+## Fair Working/Obedience Intelligence &lt;2e-16
+## Lowest Degree of Working/Obedience Intelligence &lt;2e-16
+## Average Working/Obedience Intelligence
+## Average Working/Obedience Intelligence -
+## Brightest Dogs &lt;2e-16
+## Excellent Working Dogs &lt;2e-16
+## Fair Working/Obedience Intelligence &lt;2e-16
+## Lowest Degree of Working/Obedience Intelligence &lt;2e-16
+## Brightest Dogs Excellent Working Dogs
+## Average Working/Obedience Intelligence - -
+## Brightest Dogs - -
+## Excellent Working Dogs &lt;2e-16 -
+## Fair Working/Obedience Intelligence &lt;2e-16 &lt;2e-16
+## Lowest Degree of Working/Obedience Intelligence &lt;2e-16
+&lt;2e-16
+## Fair Working/Obedience Intelligence
+## Average Working/Obedience Intelligence -
+## Brightest Dogs -
+## Excellent Working Dogs -
+## Fair Working/Obedience Intelligence -
+## Lowest Degree of Working/Obedience Intelligence &lt;2e-16
+##
+## P value adjustment method: none</code></pre>
+<pre class="r"><code>pairwise.t.test(dogs$reps_upper, dogs$Classification, p.adj = &quot;none&quot;)</code></pre>
+<pre><code>##
+## Pairwise comparisons using t tests with pooled SD
+##
+## data: dogs$reps_upper and dogs$Classification
+##
+## Above Average Working Dogs
+## Average Working/Obedience Intelligence &lt;2e-16
+## Brightest Dogs &lt;2e-16
+## Excellent Working Dogs &lt;2e-16
+## Fair Working/Obedience Intelligence &lt;2e-16
+## Lowest Degree of Working/Obedience Intelligence &lt;2e-16
+## Average Working/Obedience Intelligence
+## Average Working/Obedience Intelligence -
+## Brightest Dogs &lt;2e-16
+## Excellent Working Dogs &lt;2e-16
+## Fair Working/Obedience Intelligence &lt;2e-16
+## Lowest Degree of Working/Obedience Intelligence &lt;2e-16
+## Brightest Dogs Excellent Working Dogs
+## Average Working/Obedience Intelligence - -
+## Brightest Dogs - -
+## Excellent Working Dogs &lt;2e-16 -
+## Fair Working/Obedience Intelligence &lt;2e-16 &lt;2e-16
+## Lowest Degree of Working/Obedience Intelligence &lt;2e-16
+&lt;2e-16
+## Fair Working/Obedience Intelligence
+## Average Working/Obedience Intelligence -
+## Brightest Dogs -
+## Excellent Working Dogs -
+## Fair Working/Obedience Intelligence -
+## Lowest Degree of Working/Obedience Intelligence &lt;2e-16
+##
+## P value adjustment method: none</code></pre>
+<pre class="r"><code># Type 1 Error
+1 - 0.95^30</code></pre>
+<pre><code>## [1] 0.7853612</code></pre>
+<pre class="r"><code># Bonferroni Correction
+0.05/33</code></pre>
+<pre><code>## [1] 0.001515152</code></pre>
+<p><em>In total, I performed 33 tests (1 MANOVA, 2 ANOVA, and 33 t tests). The probability of a Type 1 error is 0.7853612. After adjusting the significance level through a Bonferroni correction, the new alpha is 0.001515152. Yet even with this new alpha, the p-values from MANOVA and both univariate ANOVAs continue to show significant differences in at least one variable (all these p-values = &lt; 2.2e-16). Furthermore, after conducting t tests, reps_lower and reps_upper continue to show significant differences across the different classification levels. In fact, there were 30 significant differences found. The MANOVA assumptions include: random samples, independent observations, multivariate normality of dependent variables, homogeneity of within-group covariance matrices, linear relationships among dependent variables, no extreme outliers, and no multicollinearity. However, these assumptions are likely not met. For example, the lower and upper limits of height and weight are all highly linearly correlated, so the multicollinearity assumption is violated. In fact, the reason why I chose the reps_lower and reps_upper variables in the post hoc t tests is because choosing any other combination of dependent variables created an error of &quot;rank deficiency&quot; and didn't allow the code to run.</em></p>
+</div>
+<div id="randomization-test" class="section level2">
+<h2>2. Randomization Test</h2>
+<pre class="r"><code># PERMANOVA
+library(vegan)
+select &lt;- dplyr::select  
+dists &lt;- dogs %&gt;% select(reps_lower, height_low_inches, weight_low_lbs) %&gt;% dist()  
+adonis(dists ~ Classification, data = dogs)</code></pre>
+<pre><code>##
+## Call:
+## adonis(formula = dists ~ Classification, data = dogs)
+##
+## Permutation: free
+## Number of permutations: 999
+##
+## Terms added sequentially (first to last)
+##
+## Df SumsOfSqs MeanSqs F.Model R2 Pr(&gt;F)
+## Classification 5 49076 9815.1 10.549 0.3499 0.001 ***
+## Residuals 98 91180 930.4 0.6501
+## Total 103 140256 1.0000
+## ---
+## Signif. codes: 0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1
+&#39; &#39; 1</code></pre>
+<pre class="r"><code># PERMANOVA by hand
+table(dogs$Classification)</code></pre>
+<pre><code>##
+## Above Average Working Dogs Average Working/Obedience
+Intelligence
+## 24 33
+## Brightest Dogs Excellent Working Dogs
+## 7 14
+## Fair Working/Obedience Intelligence Lowest Degree of
+Working/Obedience Intelligence
+## 17 9</code></pre>
+<pre class="r"><code>SST &lt;- sum(dists^2)/104  
+
+SSW &lt;- dogs %&gt;% group_by(Classification) %&gt;% select(reps_lower, height_low_inches, weight_low_lbs) %&gt;% do(d = dist(.[-1], &quot;euclidean&quot;)) %&gt;% ungroup() %&gt;% summarize(sum(d[[1]]^2)/24 + sum(d[[2]]^2)/33 + 
+sum(d[[3]]^2)/7 + sum(d[[4]]^2)/14 + sum(d[[5]]^2)/17 + sum(d[[6]]^2)/9) %&gt;% pull  
+
+F_obs &lt;- ((SST - SSW)/5)/(SSW/98) 
+
+Fs &lt;- replicate(1000, 
+{     
+  new &lt;- dogs %&gt;% mutate(Classification = sample(Classification))     
+  SSW &lt;- new %&gt;% group_by(Classification) %&gt;% select(reps_lower, height_low_inches, weight_low_lbs) %&gt;% do(d = dist(.[-1], &quot;euclidean&quot;)) %&gt;% ungroup() %&gt;% summarize(sum(d[[1]]^2)/24 + sum(d[[2]]^2)/33 + 
+sum(d[[3]]^2)/7 + sum(d[[4]]^2)/14 + sum(d[[5]]^2)/17 + sum(d[[6]]^2)/9) %&gt;%  pull     
+  ((SST - SSW)/5)/(SSW/98) 
+})  
+
+{     
+  hist(Fs, prob = T)     
+  abline(v = F_obs, col = &quot;red&quot;, add = T) 
+}</code></pre>
+<p><img src="../../project/project2_files/figure-html/unnamed-chunk-2-1.png" width="768" style="display: block; margin: auto;" /> <em>I conducted a PERMANOVA test on my dataset, because it doesn't require the assumptions of a MANOVA test. Null hypothesis: for reps_lower, height_low_inches, and weight_low_lbs, the means for each Classification are equal. Alternative hypothesis: for at least one of these dependent variables, at least 1 Classification mean is different. The PERMANOVA gave a p-value of 0.001, which is less than alpha=0.05, so the null hypothesis can be rejected.</em></p>
+</div>
+<div id="linear-regression" class="section level2">
+<h2>3. Linear Regression</h2>
+<pre class="r"><code>set.seed(123)  
+data(dogs) 
+
+# Mean-Centering
+dogs$reps_lower_c &lt;- dogs$reps_lower - mean(dogs$reps_lower) 
+dogs$height_low_inches_c &lt;- dogs$height_low_inches - mean(dogs$height_low_inches)  
+
+
+# Model
+fit1 &lt;- lm(weight_low_lbs ~ reps_lower_c * height_low_inches_c, data = dogs)
+
+summary(fit1)</code></pre>
+<pre><code>##
+## Call:
+## lm(formula = weight_low_lbs ~ reps_lower_c *
+height_low_inches_c,
+## data = dogs)
+##
+## Residuals:
+## Min 1Q Median 3Q Max
+## -76.781 -8.520 -1.995 9.007 65.569
+##
+## Coefficients:
+## Estimate Std. Error t value Pr(&gt;|t|)
+## (Intercept) 42.31514 1.77012 23.905 &lt; 2e-16 ***
+## reps_lower_c 0.12267 0.08642 1.419 0.159
+## height_low_inches_c 3.34382 0.26371 12.680 &lt; 2e-16 ***
+## reps_lower_c:height_low_inches_c 0.06377 0.01261 5.058
+1.92e-06 ***
+## ---
+## Signif. codes: 0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1
+&#39; &#39; 1
+##
+## Residual standard error: 18.01 on 100 degrees of freedom
+## Multiple R-squared: 0.646, Adjusted R-squared: 0.6354
+## F-statistic: 60.83 on 3 and 100 DF, p-value: &lt; 2.2e-16</code></pre>
+<pre class="r"><code>dogs %&gt;% ggplot(aes(x=reps_lower_c, y=weight_low_lbs, color=height_low_inches_c)) + geom_point() + geom_smooth(method=&quot;lm&quot;, se=F)</code></pre>
+<p><img src="../../project/project2_files/figure-html/unnamed-chunk-3-1.png" width="768" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># Linearity and Homoskedasticity Assumption
+resids &lt;- fit1$residuals 
+fitvals &lt;- fit1$fitted.values 
+ggplot() + geom_point(aes(fitvals, resids)) + geom_hline(yintercept = 0,      color = &quot;red&quot;)</code></pre>
+<p><img src="../../project/project2_files/figure-html/unnamed-chunk-3-2.png" width="768" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># Normality Assumption
+ggplot() + geom_qq(aes(sample = resids)) + geom_qq_line(aes(sample = resids))</code></pre>
+<p><img src="../../project/project2_files/figure-html/unnamed-chunk-3-3.png" width="768" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># Robust Standard Error
+coeftest(fit1, vcov = vcovHC(fit1))</code></pre>
+<pre><code>##
+## t test of coefficients:
+##
+## Estimate Std. Error t value Pr(&gt;|t|)
+## (Intercept) 42.315138 2.029767 20.8473 &lt; 2.2e-16 ***
+## reps_lower_c 0.122671 0.151834 0.8079 0.4211
+## height_low_inches_c 3.343816 0.808145 4.1376 7.324e-05
+***
+## reps_lower_c:height_low_inches_c 0.063770 0.044236
+1.4416 0.1525
+## ---
+## Signif. codes: 0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1
+&#39; &#39; 1</code></pre>
+<p><em>For every 1 unit increase in the mean lower limit of height, there is a 3.34382 increase in the lower limit of weight. The interaction between the mean lower limit of repetitions and the mean lower limit of height leads to a 0.06377 increase in the lower limit of weight. However, after recomputing the linear regression with robust standard errors, only the mean lower limit of height had a significant effect on the lower limit of weight. The proportion of the variation in the lower limit of weight this model explains is 0.646.</em></p>
+</div>
+<div id="more-linear-regression" class="section level2">
+<h2>4. More Linear Regression</h2>
+<pre class="r"><code>samp_dists &lt;- replicate(5000, 
+{
+ boot_data &lt;- sample_frac(dogs, replace = T)
+ fit1 &lt;- lm(weight_low_lbs ~ reps_lower_c * height_low_inches_c, data = boot_data)
+ coef(fit1)
+})
+
+samp_dists %&gt;% t %&gt;% as.data.frame %&gt;% summarize_all(sd)</code></pre>
+<pre><code>## (Intercept) reps_lower_c height_low_inches_c
+reps_lower_c:height_low_inches_c
+## 1 1.769357 0.1299496 0.5360947 0.03300017</code></pre>
+<p><em>These bootstrapped standard erros are larger than the original SEs but smaller than the robust SEs.</em></p>
+</div>
+<div id="logistic-regression" class="section level2">
+<h2>5. Logistic Regression</h2>
+<pre class="r"><code># Make Binary Variable
+dogs %&gt;% summarize(median(height_high_inches))</code></pre>
+<pre><code>##   median(height_high_inches)
+## 1                       21.5</code></pre>
+<pre class="r"><code>dogs &lt;- dogs %&gt;% mutate(height = ifelse(`height_high_inches` &gt; 21.5,
+&quot;Tall&quot;,&quot;Short&quot;)) 
+dogs &lt;- dogs %&gt;% mutate(height_b = ifelse(height==&quot;Tall&quot;,1,0))
+
+
+# Model
+fit2 &lt;- glm(height_b ~ reps_upper + weight_high_lbs, data = dogs, family = &quot;binomial&quot;)
+summary(fit2)</code></pre>
+<pre><code>##
+## Call:
+## glm(formula = height_b ~ reps_upper + weight_high_lbs,
+family = &quot;binomial&quot;,
+## data = dogs)
+##
+## Deviance Residuals:
+## Min 1Q Median 3Q Max
+## -1.83793 -0.32121 -0.03733 0.36336 2.94688
+##
+## Coefficients:
+## Estimate Std. Error z value Pr(&gt;|z|)
+## (Intercept) -6.98912 1.57836 -4.428 9.51e-06 ***
+## reps_upper 0.01618 0.01485 1.090 0.276
+## weight_high_lbs 0.12414 0.02408 5.156 2.53e-07 ***
+## ---
+## Signif. codes: 0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1
+&#39; &#39; 1
+##
+## (Dispersion parameter for binomial family taken to be 1)
+##
+## Null deviance: 144.175 on 103 degrees of freedom
+## Residual deviance: 52.682 on 101 degrees of freedom
+## AIC: 58.682
+##
+## Number of Fisher Scoring iterations: 7</code></pre>
+<pre class="r"><code>exp(0.12414)</code></pre>
+<pre><code>## [1] 1.132174</code></pre>
+<pre class="r"><code># Confusion Matrix
+probs &lt;- predict(fit2, type = &quot;response&quot;)
+table(predict = as.numeric(probs &gt; 0.5), truth = dogs$height_b) %&gt;%
+ addmargins</code></pre>
+<pre><code>##        truth
+## predict   0   1 Sum
+##     0    47   3  50
+##     1     5  49  54
+##     Sum  52  52 104</code></pre>
+<pre class="r"><code>class_diag &lt;- function(probs, truth) {
+
+ tab &lt;- table(factor(probs &gt; 0.5, levels = c(&quot;FALSE&quot;, &quot;TRUE&quot;)),
+ truth)
+ acc = sum(diag(tab))/sum(tab)
+ sens = tab[2, 2]/colSums(tab)[2]
+ spec = tab[1, 1]/colSums(tab)[1]
+ ppv = tab[2, 2]/rowSums(tab)[2]
+
+ if (is.numeric(truth) == FALSE &amp; is.logical(truth) == FALSE)
+ truth &lt;- as.numeric(truth) - 1
+
+ ord &lt;- order(probs, decreasing = TRUE)
+ probs &lt;- probs[ord]
+ truth &lt;- truth[ord]
+
+ TPR = cumsum(truth)/max(1, sum(truth))
+ FPR = cumsum(!truth)/max(1, sum(!truth))
+
+ dup &lt;- c(probs[-1] &gt;= probs[-length(probs)], FALSE)
+ TPR &lt;- c(0, TPR[!dup], 1)
+ FPR &lt;- c(0, FPR[!dup], 1)
+
+ n &lt;- length(TPR)
+ auc &lt;- sum(((TPR[-1] + TPR[-n])/2) * (FPR[-1] - FPR[-n]))
+
+ data.frame(acc, sens, spec, ppv, auc)
+}
+class_diag(probs, dogs$height_b)</code></pre>
+<pre><code>##         acc      sens      spec       ppv       auc
+## 1 0.9230769 0.9423077 0.9038462 0.9074074 0.9585799</code></pre>
+<pre class="r"><code># Logit Density Plot
+dogs$logit &lt;- predict(fit2, type = &quot;link&quot;)
+dogs %&gt;% ggplot() + geom_density(aes(logit, color=height, fill= height), alpha=.4) + theme(legend.position=c(.85,.85)) + geom_vline(xintercept=0) + xlab(&quot;logit (log-odds)&quot;) + geom_rug(aes(logit,color= height))</code></pre>
+<p><img src="../../project/project2_files/figure-html/unnamed-chunk-5-1.png" width="768" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># ROC/AUC
+library(plotROC)
+ROCplot &lt;- ggplot(dogs) + geom_roc(aes(d = height_b, m = probs),
+ n.cuts = 0)
+ROCplot</code></pre>
+<p><img src="../../project/project2_files/figure-html/unnamed-chunk-5-2.png" width="768" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>calc_auc(ROCplot)</code></pre>
+<pre><code>##   PANEL group       AUC
+## 1     1    -1 0.9585799</code></pre>
+<p><em>The logistic regression model shows that after controlling for the upper limit of repetitions, the upper limit of weight increases the log-odds of height. To clarify, every one-unit increase in the upper limit of weight multiplies the odds of height by 1.132174. For this model, the accuracy value is 0.9230769, the sensitivity value (true positive rate) is 0.9423077, the specificity value (true negative rate) is 0.9038462, and the precision value is 0.9074074. The AUC is 0.9585799, which can be considered great since it falls between 0.9 and 1.0. The AUC indicates that a randomly-selected tall breed has a higher probability than a randomly-selected short breed.</em></p>
+</div>
+<div id="more-logistic-regression" class="section level2">
+<h2>6. More Logistic Regression</h2>
+<pre class="r"><code># Model
+fit3 &lt;- glm(height_b ~ reps_lower + reps_upper + weight_low_lbs + weight_high_lbs + height_low_inches, data = dogs, family = &quot;binomial&quot;)
+summary(fit3)</code></pre>
+<pre><code>##
+## Call:
+## glm(formula = height_b ~ reps_lower + reps_upper +
+weight_low_lbs +
+## weight_high_lbs + height_low_inches, family =
+&quot;binomial&quot;,
+## data = dogs)
+##
+## Deviance Residuals:
+## Min 1Q Median 3Q Max
+## -1.67079 -0.18115 -0.00118 0.09292 2.51534
+##
+## Coefficients:
+## Estimate Std. Error z value Pr(&gt;|z|)
+## (Intercept) -18.55037 5.03344 -3.685 0.000228 ***
+## reps_lower -0.19556 0.10610 -1.843 0.065305 .
+## reps_upper 0.18985 0.08620 2.203 0.027628 *
+## weight_low_lbs 0.07463 0.10166 0.734 0.462869
+## weight_high_lbs 0.07960 0.06831 1.165 0.243897
+## height_low_inches 0.50275 0.22259 2.259 0.023908 *
+## ---
+## Signif. codes: 0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1
+&#39; &#39; 1
+##
+## (Dispersion parameter for binomial family taken to be 1)
+##
+## Null deviance: 144.175 on 103 degrees of freedom
+## Residual deviance: 32.471 on 98 degrees of freedom
+## AIC: 44.471
+##
+## Number of Fisher Scoring iterations: 8</code></pre>
+<pre class="r"><code># Confusion Matrix
+probab &lt;- predict(fit3, type = &quot;response&quot;)
+table(predict = as.numeric(probab &gt; 0.5), truth = dogs$height_b) %&gt;%
+ addmargins</code></pre>
+<pre><code>##        truth
+## predict   0   1 Sum
+##     0    48   3  51
+##     1     4  49  53
+##     Sum  52  52 104</code></pre>
+<pre class="r"><code>class_diag &lt;- function(probab, truth) {
+
+ tab &lt;- table(factor(probab &gt; 0.5, levels = c(&quot;FALSE&quot;, &quot;TRUE&quot;)),
+ truth)
+ acc = sum(diag(tab))/sum(tab)
+ sens = tab[2, 2]/colSums(tab)[2]
+ spec = tab[1, 1]/colSums(tab)[1]
+ ppv = tab[2, 2]/rowSums(tab)[2]
+
+ if (is.numeric(truth) == FALSE &amp; is.logical(truth) == FALSE)
+ truth &lt;- as.numeric(truth) - 1
+
+ ord &lt;- order(probab, decreasing = TRUE)
+ probab &lt;- probab[ord]
+ truth &lt;- truth[ord]
+
+ TPR = cumsum(truth)/max(1, sum(truth))
+ FPR = cumsum(!truth)/max(1, sum(!truth))
+
+ dup &lt;- c(probab[-1] &gt;= probab[-length(probab)], FALSE)
+ TPR &lt;- c(0, TPR[!dup], 1)
+ FPR &lt;- c(0, FPR[!dup], 1)
+
+ n &lt;- length(TPR)
+ auc &lt;- sum(((TPR[-1] + TPR[-n])/2) * (FPR[-1] - FPR[-n]))
+
+ data.frame(acc, sens, spec, ppv, auc)
+}
+class_diag(probab, dogs$height_b)</code></pre>
+<pre><code>##         acc      sens      spec       ppv       auc
+## 1 0.9326923 0.9423077 0.9230769 0.9245283 0.9840976</code></pre>
+<pre class="r"><code># 10 Fold Cross Validation
+set.seed(1234)
+k = 10
+
+data1 &lt;- dogs[sample(nrow(dogs)), ]
+folds &lt;- cut(seq(1:nrow(dogs)), breaks = k, labels = F)
+diags &lt;- NULL
+for (i in 1:k) {
+
+ train &lt;- data1[folds != i, ]
+ test &lt;- data1[folds == i, ]
+
+ truth &lt;- test$height_b
+
+ fit4 &lt;- glm(height_b ~ reps_lower + reps_upper + weight_low_lbs + weight_high_lbs + height_low_inches, data = train, family = &quot;binomial&quot;)
+ probs1 &lt;- predict(fit4, newdata = test, type = &quot;response&quot;)
+
+ diags &lt;- rbind(diags, class_diag(probs1, truth))
+}
+summarize_all(diags, mean)</code></pre>
+<pre><code>##         acc      sens spec      ppv       auc
+## 1 0.9236364 0.9490476 0.91 0.902381 0.9511905</code></pre>
+<pre class="r"><code># LASSO
+x &lt;- -model.matrix(fit3)
+y &lt;- as.matrix(dogs$height_b)
+cv &lt;- cv.glmnet(x, y, family = &quot;binomial&quot;)
+lasso1 &lt;- glmnet(x, y, , family = &quot;binomial&quot;, lambda = cv$lambda.1se)
+coef(lasso1)</code></pre>
+<pre><code>## 7 x 1 sparse Matrix of class &quot;dgCMatrix&quot;
+##                              s0
+## (Intercept)       -4.4875135000
+## (Intercept)        .           
+## reps_lower         .           
+## reps_upper         .           
+## weight_low_lbs    -0.0008221957
+## weight_high_lbs   -0.0153227859
+## height_low_inches -0.2010684542</code></pre>
+<pre class="r"><code># Cross Validation from LASSO
+set.seed(1234)
+k = 10
+
+data1 &lt;- dogs[sample(nrow(dogs)), ]
+folds &lt;- cut(seq(1:nrow(dogs)), breaks = k, labels = F)
+diags &lt;- NULL
+for (i in 1:k) {
+
+ train &lt;- data1[folds != i, ]
+ test &lt;- data1[folds == i, ]
+
+ truth &lt;- test$height_b
+
+ fit5 &lt;- glm(height_b ~ weight_low_lbs + weight_high_lbs + height_low_inches, data = train, family = &quot;binomial&quot;)
+ probs2 &lt;- predict(fit5, newdata = test, type = &quot;response&quot;)
+
+ diags &lt;- rbind(diags, class_diag(probs2, truth))
+}
+summarize_all(diags, mean)</code></pre>
+<pre><code>##         acc      sens   spec       ppv       auc
+## 1 0.9336364 0.9490476 0.9225 0.9190476 0.9486905</code></pre>
+<p><em>Using all of the response variables (except height_high_inches since that was the variable used to create the binary variable), the logistic regression model created some classification diagnostics. The accuracy value is 0.9326923, the sensitivity value is 0.9423077, the specificity value is 0.9230769, and the precision value is 0.9245283. The AUC is 0.9840976, which can be considered great since it falls between 0.9 and 1.0. After conducting a 10-fold cross validation, out-of-sample classification diagnostics was created. The accuracy value is 0.9236364, the sensitivity value is 0.9490476, the specificity value is 0.91, and the precision value is 0.902381. The AUC is 0.9511905, which can be considered great since it falls between 0.9 and 1.0. However, this out-of-sample AUC value is less than the AUC of the logistic regression model with all response variables. LASSO retains the variables weight_low_lbs, weight_high_lbs, and height_low_inches. Conducting another 10-fold cross validation using these specific LASSO variables generated a final set of classification diagnostics. The accuracy value is 0.9336364, the sensitivity value is 0.9490476, the specificity value is 0.9225, and the precision value is 0.9190476. The AUC is 0.9486905, which can be considered great since it falls between 0.9 and 1.0. Ultimately, this out-of-sample AUC using the LASSO variables is smaller than both the AUC from the logistic regression model with all variables and the AUC from the out-of-sample model.</em></p>
+</div>
+</div>
+
+            
+        <hr>         <div class="related-posts">
+                <h5>Related Posts</h5>
+                
+              </div> 
+            </div>
+          </div>
+
+   <hr>  <div class="disqus">
+  <div id="disqus_thread"></div>
+  <script type="text/javascript">
+
+    (function() {
+      
+      
+      if (window.location.hostname == "localhost")
+        return;
+
+      var disqus_shortname = '';
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  <a href="http://disqus.com/" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div> 
+        </div>
+      </div>
+    </div>
+
+    
+    <footer>
+  <div id="footer">
+    <div class="container">
+      <p class="text-muted">&copy; All rights reserved. Powered by <a href="https://gohugo.io/">Hugo</a> and
+      <a href="http://www.github.com/nurlansu/hugo-sustain/">sustain</a> with ♥</p>
+    </div>
+  </div>
+</footer>
+<div class="footer"></div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="../../js/docs.min.js"></script>
+<script src="../../js/main.js"></script>
+
+<script src="../../js/ie10-viewport-bug-workaround.js"></script>
+
+
+    
+  </body>
+</html>

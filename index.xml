@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Shivani Kottur</title>
+    <link>/</link>
+    <description>Recent content on Shivani Kottur</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-US</language>
+    <lastBuildDate>Fri, 11 Dec 2020 00:00:00 +0000</lastBuildDate><atom:link href="/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Blog Post</title>
+      <link>/post/2020/12/11/blog-post/</link>
+      <pubDate>Fri, 11 Dec 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/post/2020/12/11/blog-post/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Project1</title>
+      <link>/project/project1/</link>
+      <pubDate>Fri, 11 Dec 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/project/project1/</guid>
+      <description>Shivani Kottur, ssk2425 Introduction This project is all about analyzing characteristics of dogs. The first dataset, &amp;quot;dog_intelligence,&amp;quot; is about different breeds of dogs and their mental characteristics. Its variables include the dog breed, their intelligence classification, the probability that the breed obeys the first command given, as well as the upper and lower limits of repetitions for the breed to understand any new commands. The second dataset, &amp;quot;AKC_Breed_Info,&amp;quot; is about different breeds of dogs and their physical characteristics.</description>
+    </item>
+    
+    <item>
+      <title>Hello R Markdown</title>
+      <link>/post/2015/07/23/hello-r-markdown/</link>
+      <pubDate>Thu, 23 Jul 2015 21:13:14 -0500</pubDate>
+      
+      <guid>/post/2015/07/23/hello-r-markdown/</guid>
+      <description>R Markdown This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see http://rmarkdown.rstudio.com.
+You can embed an R code chunk like this:
+summary(cars) ## speed dist ## Min. : 4.0 Min. : 2.00 ## 1st Qu.:12.0 1st Qu.: 26.00 ## Median :15.0 Median : 36.00 ## Mean :15.4 Mean : 42.98 ## 3rd Qu.</description>
+    </item>
+    
+    <item>
+      <title>Project2</title>
+      <link>/project/project2/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/project/project2/</guid>
+      <description>Shivani Kottur, ssk2425 Introduction This project involves the dogs dataset, which includes certain mental and physical characteristics of numerous dog breeds. Specifically, the dataset contains variables representing the breeds (&amp;quot;Breed&amp;quot;), their intelligence level classifications (&amp;quot;Classification&amp;quot;), the upper and lower limits of repetitions necessary to understand commands (&amp;quot;reps_lower&amp;quot;, &amp;quot;reps_upper&amp;quot;), and the upper and lower limits of height and weight (&amp;quot;height_low_inches&amp;quot;, &amp;quot;height_high_inches&amp;quot;, &amp;quot;weight_low_lbs&amp;quot;, &amp;quot;weight_high_lbs&amp;quot;). In total, there are 104 observations.
+ 1.</description>
+    </item>
+    
+    <item>
+      <title>Projects</title>
+      <link>/projects/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/projects/</guid>
+      <description> Check out some of my coding projects below:
+ Wrangling &amp;amp; Exploratory Data Analysis
+ Modeling, Inference, Prediction
+  -- </description>
+    </item>
+    
+    <item>
+      <title>Resume</title>
+      <link>/resume/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/resume/</guid>
+      <description>    </description>
+    </item>
+    
+  </channel>
+</rss>

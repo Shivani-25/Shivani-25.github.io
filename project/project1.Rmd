@@ -1,0 +1,194 @@
+---
+title: "Project1"
+author: "Me"
+date: "2020-12-11"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval = TRUE, fig.align = "center", warning = F, message = F,
+tidy=TRUE, tidy.opts=list(width.cutoff=60), R.options=list(max.print=100))
+```
+
+# Shivani Kottur, ssk2425
+
+
+
+## Introduction
+*This project is all about analyzing characteristics of dogs. The first dataset, "dog_intelligence," is about different breeds of dogs and their mental characteristics. Its variables include the dog breed, their intelligence classification, the probability that the breed obeys the first command given, as well as the upper and lower limits of repetitions for the breed to understand any new commands. The second dataset, "AKC_Breed_Info," is about different breeds of dogs and their physical characteristics. Its variables include the dog breed, the upper and lower limits of height in inches, and the upper and lower limits of weight in pounds. The two datasets were acquired from the data.world website online. However, the first dataset's data originally came from Stanley Coren, a researcher from the University of British Columbia. The second dataset's data originally came from the American Kennel Club.*
+  
+*This data is interesting to me because I love dogs and have always wanted my own. So, I like having the opportunity to analyze data involving their physical and mental characteristics. I expect to see associations between their height and weight data. I do not expect any other associations.*
+
+
+
+## Datasets
+```{R}
+library(tidyverse)
+
+mental <- read_csv("dog_intelligence.csv")
+physical <- read_csv("AKC_Breed_Info.csv")
+
+mental <- mental %>% as.data.frame
+physical <- physical %>% as.data.frame
+
+mental
+physical
+
+```
+
+
+
+## Untidying and Tidying
+```{R}
+
+mental <- mental %>% pivot_longer(c("reps_lower","reps_upper"),
+  names_to="reps", values_to="reps values")
+mental <- mental %>% pivot_wider(names_from="reps", values_from="reps values")
+
+mental
+
+
+physical <- physical %>% pivot_longer(c("height_low_inches",
+  "height_high_inches"), names_to="height", values_to="height values")
+physical <- physical %>% pivot_wider(names_from="height", values_from="height values")
+
+physical <- physical %>% pivot_longer(c("weight_low_lbs",
+  "weight_high_lbs"), names_to="weight", values_to="weight values")
+physical <- physical %>% pivot_wider(names_from="weight", values_from="weight values")
+
+physical
+
+```
+*Both datasets were already tidy when they were obtained. So in this section, I untidied and then tidied them again. For the first dataset, I untidied the "reps_lower" and "reps_higher" variables by combining them into one column through pivot_longer. Then, I separated them again to tidy using pivot_wider.*
+
+*For the second dataset, I untidied more columns. I combined "height_low_inches with "height_high_inches" into one column, and "weight_low_lbs with "weight_high_lbs" into another column using pivot_longer. Then, I separated all 4 variables into individual columns in order to tidy them back, using pivot_wider. This allowed each observation to have its own row and each variable its own column.*
+
+
+
+## Joining
+```{R, echo=FALSE}
+
+dogs <- inner_join(mental, physical, by="Breed")
+
+dogs <- dogs %>% slice(-c(71))
+
+dogs <- dogs[-3]
+
+dogs <- dogs %>% mutate(height_low_inches=as.numeric(height_low_inches), height_high_inches=as.numeric(height_high_inches), weight_low_lbs=as.numeric(weight_low_lbs), weight_high_lbs=as.numeric(weight_high_lbs))
+
+dogs
+
+```
+*The first dataset had 136 observations; the second dataset had 150 observations. I wanted to conduct an inner join between these two datasets. That is because I only wanted to analyze the dog breeds that were in common between the two, so all their physical and mental characteristics would be included. I didn't want to look at dog breeds that had some aspects of their data missing.*
+
+*I joined the two sets by the Breed listed in both, creating a new joined dataset of 105 observations. Then, I had to drop row 71 of the new joined dataset, since I noticed that it had some values listed as "na." Not that the value was missing and R coded it as "N/A", but in the original set, the research manually typed it out as "na." Furthermore, I dropped a column with the variable "obey." This variable represents the percentage of commands obeyed by the breeds, but I didn't think it was as important and in-depth as other variables like "reps_lower" and "reps_higher" in representing the Breed's obedience level.*
+
+*Finally, I had to convert four variables from character variables to numeric variables so they would be able to have summary statistics conducted on them. The final dataset has 104 observations with 8 variables.*
+
+
+
+## Wrangling Part1
+```{R}
+
+dogs %>% filter(between(weight_low_lbs, 5, 35)) %>% summarize(mean(weight_high_lbs))
+
+dogs %>% select(Breed, weight_low_lbs, weight_high_lbs) %>% summarize(n_distinct(Breed))
+
+dogs %>% arrange(height_low_inches) %>% summarize(sd(height_low_inches))
+
+dogs %>% group_by(Classification) %>% summarize(max(weight_high_lbs))
+
+dogs %>% mutate(height_range = height_high_inches - height_low_inches)
+
+dogs %>% summarize(mean_low_height = mean(height_low_inches))
+
+```
+*In this section, I used the six core dplyr verbs to explore the dataset. After filtering for dogs who have a weight_low_lbs between 5 and 35 pounds, their mean weight_high_lbs  is 27.733 lbs. There are 104 distinct dog breeds. After arranging the height_low_inches from smallest to greatest, the standard deviation of the height_low_inches is 6.751 inches. Next, we found the max weight_high_lbs for each intelligence classification by grouping by each classification. Then, we found the range of heights for each dog breed by making a new column for it using mutate. Finally, we found the mean height_low_inches using summarize.* 
+
+
+
+## Wrangling Part2
+```{R}
+
+dogs %>% summarize_if(is.numeric, funs(mean, sd, min, max, var)) 
+
+dogs %>% group_by(Classification) %>% summarize_if(is.numeric, funs(mean, sd,
+  min, max, var))
+
+cormat <- dogs %>% select_if(is.numeric) %>% cor(use="pair")
+cormat
+
+```
+*This section generated three different outputs. In the first one, the mean, standard deviation, minimum, maximum, and variance of every numeric variable was calculated. The second output calculated all the above summary statistics, but grouped by each intelligence level classification. The final output was a correlation matrix of the correlations among all the numeric variables.*
+
+
+
+## Visualizing
+```{R}
+
+library(RColorBrewer)
+
+cormat %>% as.data.frame %>% rownames_to_column("var1") %>% 
+  pivot_longer(-1, "var2", values_to="correlation") %>% 
+  ggplot(aes(var1, var2, fill=correlation)) + geom_tile() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  coord_fixed() + ggtitle("Correlation Heatmap") + 
+  geom_text(aes(label=round(correlation, 2)))
+
+ggplot(dogs, aes(height_low_inches, weight_low_lbs, color=Classification)) +
+  geom_point() + scale_x_continuous(breaks = seq(0,50,5)) + 
+  xlab("Height Lower Limit (inches)") + ylab("Weight Lower Limit (pounds)") +
+  ggtitle("Weight Versus Height (Lower Limit)") + 
+  theme(legend.justification = "bottom") +
+  scale_color_brewer(palette="Set3")
+ 
+ggplot(dogs, aes(x = weight_low_lbs, fill = Classification))+
+  geom_bar(aes(y = reps_lower), stat="summary", fun=mean) +
+  scale_x_continuous(breaks = seq(0,200,10)) + 
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) + 
+  xlab("Weight Lower Limit (pounds)") + ylab("Repetitions Lower Limit") +
+  ggtitle("Repetitions Versus Weight (Lower Limits)") + 
+  theme(legend.justification = "top") + scale_fill_brewer()
+
+```
+*The first plot is a correlation heatmap. It shows the correlations between all of the numeric variables in this dataset. The plot shows some interesting trends. As expected, height and weight (of both lower and upper limits) are strongly correlated (correlation coefficient is between 0.75 and 1.00). Another interesting observation is that the repetitions (of both lower and upper limits) are not correlated at all to either height or weight of the dog breed. This essentially means that intelligence level is not correlated with size (height/weight) of a dog breed.*
+
+*The second plot is a scatterplot. It shows the relationship between the weight (lower limit) and height (lower limit) of dog breeds. The intelligence level classification is mapped into the color of the scatterplot points. An interesting trend is that as expected, as the height (lower limit) of a dog breed increases, the weight (lower limit) of the breed increases as well. However, intelligence level classifications don't seem to have any correlation with the other 2 variables; they seem to be randomly spread out (colored) throughout the points.*
+  
+*The third plot is a barplot. It shows the relationship between the repetitions (lower limit) and weight (lower limit) of dog breeds. The intelligence level classification is mapped into the fill of the bars. There are some interesting trends. First, as the weight (lower limit) of a dog breed increases, the repetitions (lower limit) seems to decrease; there is an outlier to this trend though. In general, the intelligence level classification doesn't seem to have any correlation with the other 2 variables; they seem to be randomly spread out (filled) throughout the bars.*
+
+
+
+## Dimensionality Reduction
+```{R}
+
+library(cluster)
+
+pam_data <- dogs %>% select(height_high_inches, weight_high_lbs, reps_upper)
+
+sil_width <- vector()
+for(i in 2:10)
+{
+  pam_fit <- pam(pam_data, k=i)
+  sil_width[i] <- pam_fit$silinfo$avg.width
+}
+ggplot() + geom_line(aes(x=1:10, y=sil_width)) + scale_x_continuous(name="k",
+  breaks=1:10)
+
+pam1 <- pam_data %>% scale %>% pam(k=4)
+pam1
+
+pamclust <- pam_data %>% mutate(cluster=as.factor(pam1$clustering))
+pamclust %>% ggplot(aes(height_high_inches, weight_high_lbs,
+  color=cluster))+geom_point() + ggtitle("Cluster Scatterplot")
+
+pamclust %>% group_by(cluster)%>% summarize_if(is.numeric,mean,na.rm=T)
+
+pam1$silinfo$avg.width
+plot(pam1, which=2)
+
+
+
+```
+*I performed PAM clustering on my dataset. I clustered by 3 numeric variables, "height_high_inches", "weight_high_lbs", and "reps_upper". I wanted to see how these 3 variables were related. In the first step, I figured out how many clusters were needed by generating a silhouette plot. This plot told me I needed 4 clusters, since that was the k-value with the highest width (~0.485). After that, I conducted the PAM clustering analysis. Then, I visualized the clusters. There appeared to be 3 distinct clusters, not 4, because two clusters appeared to be in the same area (the red and purple ones). So in a way, the data instead seems to be clustered into three different groups. Perhaps this corresponds to small, medium, and large dogs (since height and weight were mapped on the axes). Afterward, the mean for each cluster's variables was computed. Finally, the average silhouette width was calculated to be 0.43. This value indicates that the structure is weak and could be artificial (corresponding to values 0.26-0.50). Though the width is on the upper end of this range, perhaps its weak nature explains why the four expected clusters weren't very distinct on the plot. Overall, this PAM clustering analysis did not have much goodness-of-fit since the average silhouette width was weak and the 4 clusters weren't very distinct.*
+
