@@ -13,7 +13,7 @@ description: ''
 ## Intro
 
 *In this blog post, I will be examining the sleep data of mammals. Animals have always interested me, so I want to take a look at some characteristics of their sleep data. I will conduct this task by using both R and Python code chunks.*
-
+![](/post/2020-12-11-blog-post_files/comp bio.jpg) 
 
 
 ## Code
