@@ -12,7 +12,7 @@ description: ''
 
 ## Intro
 
-*In this blog post, I will be examining the sleep data of mammals. Animals have always interested me, so I am interested in taking a look at some characteristics of their sleep data. I will conduct this task by using both R and Python code chunks.*
+*In this blog post, I will be examining the sleep data of mammals. Animals have always interested me, so I want to take a look at some characteristics of their sleep data. I will conduct this task by using both R and Python code chunks.*
 
 
 
@@ -29,7 +29,7 @@ omni <- msleep %>% filter(vore=="omni")
 ```{python}
 r.omni.sleep_total.mean()
 ```
-*The average total sleep for omnivores in the msleep dataset is x hours. We used R and Python to calculate this value.*
+*The average total sleep for omnivores in the msleep dataset is 10.925 hours. I used R and Python to calculate this value.*
 
 
 
